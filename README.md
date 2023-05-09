@@ -8,7 +8,9 @@ Example of building a http client request caching backed by Redis using ZIO stac
 * [ZIO-JSON](https://github.com/zio/zio-json)
 * [ZIO-Schema](https://github.com/zio/zio-schema)
 
-This is very straightforward example ZIO service that takes in an STTP request and caches the body using the uri as cache key.
+This is straightforward example ZIO service that takes in an STTP request and caches the body using the uri as cache key.
+
+[The service code.](https://github.com/ianlintner/sttp-zio-redis/blob/main/src/main/scala/SttpRequestCaching.scala#L18)
 
 ## Example Dependencies
 To run the example you will need to use the `docker-compose up` to bring up the redis server.
