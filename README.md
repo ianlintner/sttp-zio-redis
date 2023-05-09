@@ -1,6 +1,12 @@
 # STTP ZIO Redis Request Caching
 
-Example of building a http client request caching using ZIO stack with the Sttp client.
+Example of building a http client request caching backed by Redis using ZIO stack with the Sttp client.
+
+* [STTP w/ ZIO](https://sttp.softwaremill.com/en/stable/backends/zio.html)
+* [ZIO](https://github.com/zio/zio)
+* [ZIO-Redis](https://github.com/zio/zio-redis)
+* [ZIO-JSON](https://github.com/zio/zio-json)
+* [ZIO-Schema](https://github.com/zio/zio-schema)
 
 This is very straightforward example ZIO service that takes in an STTP request and caches the body using the uri as cache key.
 
