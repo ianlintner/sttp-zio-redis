@@ -1,23 +1,16 @@
+import model.Dt.codec
+import model.Dt
+import services.{JsonCodecSupplier, SttpRequestCaching}
 import sttp.client3.httpclient.zio.{HttpClientZioBackend, SttpClient}
 import sttp.client3.{basicRequest, UriContext}
 import zio.*
-import zio.json.DeriveJsonCodec
-import zio.redis.*
+import zio.redis.{Redis, RedisConfig, RedisExecutor}
 import zio.schema.DeriveSchema.gen
-import zio.schema.Schema
-import zio.schema.codec.{BinaryCodec, JsonCodec}
 
 object Main extends ZIOAppDefault {
 
-  case class dt(datetime: String, timezone: String)
-  implicit val codec: zio.json.JsonCodec[dt] = DeriveJsonCodec.gen[dt]
-
-  object CodecSupplier extends CodecSupplier {
-    def get[A: Schema]: BinaryCodec[A] = JsonCodec.schemaBasedBinaryCodec
-  }
-
-  def exampleRequestToCache: ZIO[Redis & SttpClient & SttpRequestCaching, Throwable, dt] = ZIO.serviceWithZIO[SttpRequestCaching] {
-    _.sendCached[dt](basicRequest.get(uri"http://worldtimeapi.org/api/ip"))
+  def exampleRequestToCache: ZIO[Redis & SttpClient & SttpRequestCaching, Throwable, Dt] = ZIO.serviceWithZIO[SttpRequestCaching] {
+    _.sendCached[Dt](basicRequest.get(uri"http://worldtimeapi.org/api/ip"), Option("api/ip"))
   }
 
   override def run: ZIO[Any, Throwable, Unit] = {
@@ -30,7 +23,7 @@ object Main extends ZIOAppDefault {
       _         <- ZIO.logInfo(response3.datetime)
     } yield ()
   }.provide(
-    ZLayer.succeed(CodecSupplier),
+    JsonCodecSupplier.layer,
     ZLayer.succeed(RedisConfig.Default),
     RedisExecutor.layer,
     Redis.layer,
